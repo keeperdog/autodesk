@@ -1181,7 +1181,7 @@ export async function mount(props) {
 > 到这里，基于`qiankun`的微前端搭建基本完成。本文只是对qiankun从0搭建到搭建过程中遇到问题并且解决问题以及后期项目中的一些基础配置和使用做简单概述。下一次将会对`多应用部署`问题做个详细概述。
 
 ## 源码地址
-[https://github.com/xushanpei/qiankun_template](https://github.com/xushanpei/qiankun_template)
+[https://github.com/keeperdog/autodesk](https://github.com/keeperdog/autodesk)
 
 ## 微信公众号： 前端开发爱好者
 
