@@ -1183,7 +1183,6 @@ export async function mount(props) {
 ## 源码地址
 [https://github.com/keeperdog/autodesk](https://github.com/keeperdog/autodesk)
 
-## 微信公众号： 前端开发爱好者
 
 
 
