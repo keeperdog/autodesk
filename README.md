@@ -594,7 +594,7 @@ module.exports = {
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "set PORT=8003&&rescripts  start",
+    "start": "PORT=8003 rescripts start",
     "build": "rescripts  build",
     "test": "rescripts  test",
     "eject": "rescripts  eject"
