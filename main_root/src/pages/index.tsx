@@ -11,15 +11,15 @@ import {
 import { Microconfig } from '@/registerMicroAppsConfig';
 
 /**
- * 注册微应用
+ * Register a Microapp
  */
 registerMicroApps(Microconfig, {
-  // qiankun 生命周期钩子 - 微应用加载前
+  // qiankun Lifecycle Hooks - Before Microapps Load
   beforeLoad: (app: any) => {
     console.log('before load', app.name);
     return Promise.resolve();
   },
-  // qiankun 生命周期钩子 - 微应用挂载后
+  // qiankun Lifecycle hooks - after the microapp is mounted
   afterMount: (app: any) => {
     console.log('after mount', app.name);
     return Promise.resolve();
@@ -27,40 +27,41 @@ registerMicroApps(Microconfig, {
 });
 
 /**
- * 启动 qiankun
+ * start qiankun
  */
 // start();
+// There are many other configuration Options
 start({
-  prefetch: true, // 开启预加载
+  prefetch: true, // enable preload
   sandbox: {
-    experimentalStyleIsolation: true, //   开启沙箱严格模式,实验性方案
+    experimentalStyleIsolation: true, //   optional, whether to open the js sandbox, default is true.
   },
 });
 
 /**
- * 设置主应用启动后默认进入的微应用
- * 对应子应用的 activeRule
+ * Set the micro-app that is entered by default after the main application is started
+ * ActiveRule corresponding to the sub-application
  */
 // setDefaultMountApp('/purehtml');
 
-// 添加全局异常捕获
+// Add global exception catch
 addGlobalUncaughtErrorHandler((handler) => {
-  console.log('异常捕获', handler);
+  console.log('exception catch ====', handler);
 });
 
-// 全局状态
+// global state
 const state = {
-  id: 'main_主应用',
+  id: 'main_application',
 };
 const actions: MicroAppStateActions = initGlobalState(state);
 
 actions.onGlobalStateChange((state, prev) => {
-  // state: 变更后的状态; prev 变更前的状态
-  console.log(state, prev);
+  // state: the state after the change; prev the state before the change
+  console.log('state====', state, 'prev====', prev);
 });
 
 actions.setGlobalState({
-  id: 'main_主应用',
+  id: 'main_app',
 });
 
 export default function IndexPage({ children }: any) {

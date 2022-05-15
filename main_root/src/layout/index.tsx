@@ -40,6 +40,7 @@ export default function LayoutPage(props: any) {
         collapsible
         collapsed={collapsed}
         theme="dark"
+        width={230}
       >
         <div className="logo">
           <img
@@ -54,39 +55,55 @@ export default function LayoutPage(props: any) {
           selectedKeys={selectedMenuKey}
           onClick={menuChange}
         >
-          <SubMenu key="main" icon={<ClusterOutlined />} title="主应用">
-            <Menu.Item key="/main/first">主应用页面1</Menu.Item>
-            <Menu.Item key="/main/second">主应用页面2</Menu.Item>
+          <SubMenu key="main" icon={<ClusterOutlined />} title="Main App">
+            <Menu.Item key="/main/first">Main app page1</Menu.Item>
+            <Menu.Item key="/main/second">Main app page2</Menu.Item>
           </SubMenu>
-          <SubMenu key="sub" icon={<ApartmentOutlined />} title="vue2.0子应用">
-            <Menu.Item key="/vue2/">子应用1_1</Menu.Item>
-            <Menu.Item key="/vue2/about">子应用1_2</Menu.Item>
+          <SubMenu
+            key="sub"
+            icon={<ApartmentOutlined />}
+            title="vue2.0sub applicaton"
+          >
+            <Menu.Item key="/vue2/">sub applicaton 1_1</Menu.Item>
+            <Menu.Item key="/vue2/about">sub applicaton 1_2</Menu.Item>
           </SubMenu>
-          <SubMenu key="sub2" icon={<ApartmentOutlined />} title="vue3.0子应用">
-            <Menu.Item key="/vue3/">子应用2_1</Menu.Item>
-            <Menu.Item key="/vue3/about">子应用2_2</Menu.Item>
+          <SubMenu
+            key="sub2"
+            icon={<ApartmentOutlined />}
+            title="vue3.0 sub applicaton"
+          >
+            <Menu.Item key="/vue3/">sub applicaton 2_1</Menu.Item>
+            <Menu.Item key="/vue3/about">sub applicaton 2_2</Menu.Item>
           </SubMenu>
-          <SubMenu key="react" icon={<ApartmentOutlined />} title="react子应用">
-            <Menu.Item key="/react/">子应用</Menu.Item>
+          <SubMenu
+            key="react"
+            icon={<ApartmentOutlined />}
+            title="react sub applicaton"
+          >
+            <Menu.Item key="/react/">sub applicaton</Menu.Item>
           </SubMenu>
           <SubMenu
             key="purehtml"
             icon={<ApartmentOutlined />}
-            title="原生HTML子应用"
+            title="Native HTML sub applicaton"
           >
-            <Menu.Item key="/purehtml">HTML子应用</Menu.Item>
+            <Menu.Item key="/purehtml">HTML sub applicaton</Menu.Item>
           </SubMenu>
           {/* http://localhost:8003/ */}
-          <SubMenu key="umi" icon={<ApartmentOutlined />} title="Umi子应用">
-            <Menu.Item key="/umi">umi子应用</Menu.Item>
+          <SubMenu
+            key="umi"
+            icon={<ApartmentOutlined />}
+            title="Umi sub applicaton"
+          >
+            <Menu.Item key="/umi">umi sub applicaton</Menu.Item>
           </SubMenu>
 
           <SubMenu
             key="angular"
             icon={<ApartmentOutlined />}
-            title="Angular子应用"
+            title="Angular sub applicaton"
           >
-            <Menu.Item key="/angular">Angular子应用</Menu.Item>
+            <Menu.Item key="/angular">Angular sub applicaton</Menu.Item>
           </SubMenu>
         </Menu>
       </Sider>

@@ -11,6 +11,7 @@ let instance = null;
 function render(props = {}) {
   const { container } = props;
   router = new VueRouter({
+    // Pay attention to the name here, it is best not to write it to hard code, directly use the name passed by the main application
     base: window.__POWERED_BY_QIANKUN__ ? `${props.name}` : "/",
     mode: "history",
     routes,

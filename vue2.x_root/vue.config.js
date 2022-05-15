@@ -13,11 +13,13 @@ module.exports = {
   devServer: {
     hot: true,
     disableHostCheck: true,
+    // Modify the default port, the same as the registration
     port: 8001,
     overlay: {
       warnings: false,
       errors: true,
     },
+    // Solve the cross-domain problem when the main application loads sub-applications
     headers: {
       "Access-Control-Allow-Origin": "*",
     },
@@ -29,10 +31,9 @@ module.exports = {
         "@": resolve("src"),
       },
     },
-    // 让主应用能正确识别微应用暴露出来的一些信息
     output: {
       library: `${name}-[name]`,
-      libraryTarget: "umd", // 把子应用打包成 umd 库格式
+      libraryTarget: "umd",
       jsonpFunction: `webpackJsonp_${name}`,
     },
   },
