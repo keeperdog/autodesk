@@ -1,83 +1,108 @@
-## 介绍 qiankun
+# Qiankun
 
-> 在正式介绍 qiankun 之前，我们需要知道，qiankun 是一个基于 [single-spa](https://github.com/CanopyTax/single-spa) 的[微前端](https://micro-frontends.org/)实现库，旨在帮助大家能更简单、无痛的构建一个生产可用微前端架构系统。
+## Introduction - What is qiankun?
 
-> 微前端的概念借鉴自后端的微服务，主要是为了解决大型工程在变更、维护、扩展等方面的困难而提出的。目前主流的微前端方案包括以下几个：
+Qiankun is one of an implementation of Micro Frontends, which based on [single-spa](https://github.com/CanopyTax/single-spa). It aims to make it easier and painless to build a production-ready micro frontend architecture system.
+
+Qiankun hatched from Ant Financial’s unified frontend platform for cloud products based on micro frontends architecture. After full testing and polishing of a number of online applications, Ant f2e team extracted its micro frontend kernel and open sourced it. The frontend team hope to help the systems who has the same requirement more convenient to build its own micro frontends application in the community. At the same time, with the help of community, qiankun will be polished and improved.
+
+At present, qiankun has served more than 200 online applications inside Ant, and it's definitely trustworthy in terms of ease of use and completeness.
+
+## What is Micro FrontEnd?
+
+It's a techniques, strategies and recipes for building a modern web app with multiple teams that can ship features independently.
+
+The current popular micro-frontend solutions include the following:：
 
 - iframe
-- 基座模式，主要基于路由分发，qiankun 和 single-spa 就是基于这种模式
-- 组合式集成，即单独构建组件，按需加载，类似 npm 包的形式
-- EMP，主要基于 Webpack5 Module Federation
+- The pedestal mode, mainly based on route distribution, qiankun and single-spa are based on this mode
+- Npm packages, That is, build components separately and load them on demand
+- EMP，based on Webpack5 Module Federation
 - Web Components
 
-> 严格来讲，这些方案都不算是完整的微前端解决方案，它们只是用于解决微前端中运行时容器的相关问题。
+Micro Frontend's architecture has the following core values:
 
-本文我们主要对 qiankun 所基于的基座模式进行介绍。它的主要思路是将一个大型应用拆分成若干个更小、更简单，可以独立开发、测试和部署的微应用，然后由一个基座应用根据路由进行应用切换。
+- Technology Agnostic
 
-## qiankun 的核心设计理念
+  > The main framework does not restrict access to the technology stack of the application, and the sub-applications have full autonomy.
 
-- 🥄 简单
+- Independent Development and Deployment
 
-  由于主应用微应用都能做到技术栈无关，qiankun 对于用户而言只是一个类似 jQuery 的库，你需要调用几个 qiankun 的 API 即可完成应用的微前端改造。同时由于 qiankun 的 HTML entry 及沙箱的设计，使得微应用的接入像使用 iframe 一样简单。
+  > The sub application repo is independent, and the frontend and backend can be independently developed. After deployment, the main framework can be updated automatically.
 
-- 🍡 解耦/技术栈无关
+- Incremental Upgrade
 
-  微前端的核心目标是将巨石应用拆解成若干可以自治的松耦合微应用，而 qiankun 的诸多设计均是秉持这一原则，如 HTML entry、沙箱、应用间通信等。这样才能确保微应用真正具备 独立开发、独立运行 的能力。
+  > In the face of various complex scenarios, it is often difficult for us to upgrade or refactor the entire technology stack of an existing system. Micro frontend is a very good method and strategy for implementing progressive refactoring.
 
-## 特性
+- Isolated Runtime
 
-- 📦 **基于 [single-spa](https://github.com/CanopyTax/single-spa)** 封装，提供了更加开箱即用的 API。
-- 📱 **技术栈无关**，任意技术栈的应用均可 使用/接入，不论是 React/Vue/Angular/JQuery 还是其他等框架。
-- 💪 **HTML Entry 接入方式**，让你接入微应用像使用 iframe 一样简单。
-- 🛡​ **样式隔离**，确保微应用之间样式互相不干扰。
-- 🧳 **JS 沙箱**，确保微应用之间 全局变量/事件 不冲突。
-- ⚡️ **资源预加载**，在浏览器空闲时间预加载未打开的微应用资源，加速微应用打开速度。
-- 🔌 **umi 插件**，提供了 [@umijs/plugin-qiankun](https://github.com/umijs/plugins/tree/master/packages/plugin-qiankun) 供 umi 应用一键切换成微前端架构系统。
+  > State is isolated between each sub application and no shared runtime state.
 
-## 项目实战
+The micro frontends architecture is designed to solve a single application in a relatively long time span. As a result of the increase in the number of people and teams involved, it has evolved from a common small application to a monolithic application then becomes unmaintainable. Such a problem is especially common in enterprise web applications.
 
-> 本文适合刚接触 `qiankun` 的新人，介绍了如何从 0 构建一个 `qiankun` 项目。项目主要有以下构成：
+## Core Design Philosophy Of Qiankun
 
-- **主应用：**
-  - 使用 umi3.5，未使用 [@umijs/plugin-qiankun](https://github.com/umijs/plugins/tree/master/packages/plugin-qiankun)，而是直接使用的 [qiankun](https://qiankun.umijs.org/zh/guide/getting-started)
-- **vue 微应用：**
-  - 使用 vue2.x 创建
-  - 使用 vue3.x，暂未使用 vite 构建，目测 vite 不兼容
-- **react 微应用：**
-  - 使用 create-react-app 创建
-- **umi3 微应用：**
-  - 使用 umi3.结合插件 [@umijs/plugin-qiankun](https://github.com/umijs/plugins/tree/master/packages/plugin-qiankun)
-- **非 webpack 构建的微应用：**
+- Simple
 
-  - 一些非 webpack 构建的项目，例如 jQuery 项目、jsp 项目，都可以按照这个处理。
-  - 接入之前请确保你的项目里的图片、音视频等资源能正常加载，如果这些资源的地址都是完整路径（例如 https://qiankun.umijs.org/logo.png ），则没问题。如果都是相对路径，需要先将这些资源上传到服务器，使用完整路径。
+  > Since the main application and sub-applications can be independent of the technology stack, qiankun is just a jQuery-like library for users. You need to call several qiankun APIs to complete the micro frontends transformation of your application. At the same time, due to the design of qiankun's HTML entry and sandbox, accessing sub-applications is almost as simple as using an iframe.
 
-- **Angular 微应用：**
+- Decoupling/Technology Agnostic
 
-  - 使用的 @angular/cli@9.1.12 版本
+  > As the core goal of the micro frontends is to disassemble the monolithic application into a number of loosely coupled micro applications that can be autonomous, all the designs of qiankun are follow this principle, such as HTML Entry, sandbox, and communicating mechanism between applications. Only in this way we can ensure that sub-applications truly have the ability to develop and run independently.
 
-## 主应用环境搭建
+## What are some of the features of Qiankun
 
-> 主应用按照官方的说法，不限技术栈，只需要提供一个容器 DOM，然后注册微应用并 start 即可。这里我们使用 umi 来初始化。
+- Based On [single-spa](https://github.com/CanopyTax/single-spa) , provide more out-of-box APIs.
+- Technology Agnostic，any javascript framework can use/integrate, whether React/Vue/Angular/JQuery or the others.
+- HTML Entry access mode, allows you to access the son as simple application like use the iframe.
+- Style Isolation, make sure styles don't interfere with each other.
+- JS Sandbox, ensure that global variables/events do not conflict between sub-applications.
+- Prefetch Assets, prefetch unopened sub-application assets during the browser idle time to speed up the sub-application opening speed.
+- Umi Plugin, @umijs/plugin-qiankun is provided for umi applications to switch to a micro frontends architecture system with only one line code.
 
-### 初始化 & 安装 qiankun
+## Project Practise
+
+> This article is suitable for newcomers to qiankun, and introduces how to build a qiankun project from 0. The project mainly consists of:
+
+- **main application：**
+  - Using umi3.5, not using [@umijs/plugin-qiankun](https://github.com/umijs/plugins/tree/master/packages/plugin-qiankun)，but using [qiankun](https://qiankun.umijs.org/zh/guide/getting-started) directly
+- **vue sub application：**
+  - Created with vue2.x
+  - Using vue3.x, not built with vite yet, at present, vite mode is not compatible
+- **react sub application：**
+  - Created with create-react-app
+- **umi3 sub application:**
+  - Use umi3, Combine [@umijs/plugin-qiankun](https://github.com/umijs/plugins/tree/master/packages/plugin-qiankun)plugin
+- **Micro apps built without webpack：**
+
+  - Some non-webpack-built projects, such as jQuery projects, can follow this.
+
+* **Angular Microapps：**
+
+  - Version of @angular/cli@9.1.12 used
+
+## Main application environment construction
+
+> According to the official statement, the main application is not limited to the technology stack. It only needs to provide a container DOM, and then register the micro application and start it. Here we use umi to initialize.
+
+### Initialize & install qiankun
 
 ```bash
-  # 项目初始化
+  # Project initialization
   $ yarn create @umijs/umi-app
-  # 安装依赖
+  # Install dependencies
   $ yarn
-  # 启动
+  # start up
   $ yarn start
-  # 安装 qiankun
+  # Install qiankun
   $ yarn add qiankun
 ```
 
-> 基本环境搭建完成，在主应用中增加一些菜单和路由，用于主应用页面以及主应用和微应用之间切换操作。页面布局和路由配置这里不做过多介绍，文末会奉上源码。大致页面如下图：
+> The basic environment is completed, and some menus and routes are added to the main application for switching between the main application page and the main application and the micro application. The page layout and routing configuration will not be introduced too much here, and the source code will be provided at the end of the article. The general page is as follows:
 
-![](https://files.mdnice.com/user/16854/9d165d24-429e-4101-ae6b-24a6d5e7baf1.png)
+![](./images/2022-05-15-19-57-12.png)
 
-### 主应用中注册微应用
+### Register the micro application in the main application
 
 > 注册微应用的基础配置信息。当浏览器 url 发生变化时，会自动检查每一个微应用注册的 activeRule 规则，符合规则的应用将会被自动激活。本示列分别有一个主应用五个微应用构成，在主应用中增加微应用的配置文件，对注册微应用做单独的管理。
 
@@ -211,8 +236,8 @@ start({
 ### 设置主应用启动后默认进入的微应用
 
 ```js
-import { setDefaultMountApp } from "qiankun"
- setDefaultMountApp('/purehtml');
+import { setDefaultMountApp } from "qiankun";
+setDefaultMountApp("/purehtml");
 ```
 
 ## 创建对应的微应用
@@ -248,96 +273,96 @@ if (window.__POWERED_BY_QIANKUN__) {
 2. 入口文件 `main.js` 修改
 
 ```javascript
-   import "./public-path";
-   import Vue from "vue";
-   import App from "./App.vue";
-   import VueRouter from "vue-router";
-   import routes from "./router";
+import "./public-path";
+import Vue from "vue";
+import App from "./App.vue";
+import VueRouter from "vue-router";
+import routes from "./router";
 
-   Vue.config.productionTip = false;
+Vue.config.productionTip = false;
 
-   let router = null;
-   let instance = null;
-   function render(props = {}) {
-     const { container } = props;
-     router = new VueRouter({
-       // 注意这里的name,最好不要写死，直接使用主应用传过来的name
-       base: window.__POWERED_BY_QIANKUN__ ? `${props.name}` : "/",
-       mode: "history",
-       routes,
-     });
-     Vue.use(VueRouter);
-     instance = new Vue({
-       router,
-       render: (h) => h(App),
-     }).$mount(container ? container.querySelector("#app") : "#app");
-   }
+let router = null;
+let instance = null;
+function render(props = {}) {
+  const { container } = props;
+  router = new VueRouter({
+    // 注意这里的name,最好不要写死，直接使用主应用传过来的name
+    base: window.__POWERED_BY_QIANKUN__ ? `${props.name}` : "/",
+    mode: "history",
+    routes,
+  });
+  Vue.use(VueRouter);
+  instance = new Vue({
+    router,
+    render: (h) => h(App),
+  }).$mount(container ? container.querySelector("#app") : "#app");
+}
 
-   // 独立运行时
-   if (!window.__POWERED_BY_QIANKUN__) {
-     render();
-   }
+// 独立运行时
+if (!window.__POWERED_BY_QIANKUN__) {
+  render();
+}
 
-   export async function bootstrap() {
-     console.log("[vue2] vue app bootstraped");
-   }
+export async function bootstrap() {
+  console.log("[vue2] vue app bootstraped");
+}
 
-   export async function mount(props) {
-     render(props);
-   }
+export async function mount(props) {
+  render(props);
+}
 
-   export async function unmount() {
-     instance.$destroy();
-     instance.$el.innerHTML = "";
-     instance = null;
-     router = null;
-   }
+export async function unmount() {
+  instance.$destroy();
+  instance.$el.innerHTML = "";
+  instance = null;
+  router = null;
+}
 ```
 
 3. 打包配置修改（`vue.config.js`）：
 
 ```javascript
- const path = require("path");
- const { name } = require("./package");
+const path = require("path");
+const { name } = require("./package");
 
- function resolve(dir) {
-   return path.join(__dirname, dir);
- }
+function resolve(dir) {
+  return path.join(__dirname, dir);
+}
 
- module.exports = {
-   filenameHashing: true,
-   lintOnSave: process.env.NODE * ENV !== "production",
-   runtimeCompiler: true,
-   productionSourceMap: false,
-   devServer: {
-     hot: true,
-     disableHostCheck: true,
-     // 修改默认端口，和注册时一直
-     port: 8001,
-     overlay: {
-       warnings: false,
-       errors: true,
-     },
-     // 解决主应用加载子应用出现跨域问题
-     headers: {
-       "Access-Control-Allow-Origin": "*",
-     },
-   },
-   // 自定义 webpack 配置
-   configureWebpack: {
-     resolve: {
-       alias: {
-         "@": resolve("src"),
-       },
-     },
-     // 让主应用能正确识别微应用暴露出来的一些信息
-     output: {
-       library: `${name}-[name]`,
-       libraryTarget: "umd", // 把子应用打包成 umd 库格式
-       jsonpFunction: `webpackJsonp*${name}`,
-     },
-   },
- };
+module.exports = {
+  filenameHashing: true,
+  lintOnSave: process.env.NODE * ENV !== "production",
+  runtimeCompiler: true,
+  productionSourceMap: false,
+  devServer: {
+    hot: true,
+    disableHostCheck: true,
+    // 修改默认端口，和注册时一直
+    port: 8001,
+    overlay: {
+      warnings: false,
+      errors: true,
+    },
+    // 解决主应用加载子应用出现跨域问题
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+    },
+  },
+  // 自定义 webpack 配置
+  configureWebpack: {
+    resolve: {
+      alias: {
+        "@": resolve("src"),
+      },
+    },
+    // 让主应用能正确识别微应用暴露出来的一些信息
+    output: {
+      library: `${name}-[name]`,
+      libraryTarget: "umd", // 把子应用打包成 umd 库格式
+      jsonpFunction: `webpackJsonp*${name}`,
+    },
+  },
+};
 ```
 
 4. 主应用查看加载效果
@@ -373,22 +398,23 @@ if (window.__POWERED_BY_QIANKUN__) {
 2. 入口文件 `main.ts` 修改
 
 ```javascript
-  //@ts-nocheck
-import './public-path';
-import { createApp } from 'vue';
-import { createRouter, createWebHistory } from 'vue-router';
-import App from './App.vue';
-import routes from './router';
-import store from './store';
+//@ts-nocheck
+import "./public-path";
+import { createApp } from "vue";
+import { createRouter, createWebHistory } from "vue-router";
+import App from "./App.vue";
+import routes from "./router";
+import store from "./store";
 
 let router = null;
 let instance = null;
 let history = null;
 
-
 function render(props = {}) {
   const { container } = props;
-  history = createWebHistory(window.__POWERED_BY_QIANKUN__ ? `${props.name}` : '/');
+  history = createWebHistory(
+    window.__POWERED_BY_QIANKUN__ ? `${props.name}` : "/"
+  );
   router = createRouter({
     history,
     routes,
@@ -397,7 +423,7 @@ function render(props = {}) {
   instance = createApp(App);
   instance.use(router);
   instance.use(store);
-  instance.mount(container ? container.querySelector('#app') : '#app');
+  instance.mount(container ? container.querySelector("#app") : "#app");
 }
 
 if (!window.__POWERED_BY_QIANKUN__) {
@@ -405,7 +431,7 @@ if (!window.__POWERED_BY_QIANKUN__) {
 }
 
 export async function bootstrap() {
-  console.log('%c ', 'color: green;', 'vue3.0 app bootstraped');
+  console.log("%c ", "color: green;", "vue3.0 app bootstraped");
 }
 
 export async function mount(props) {
@@ -414,7 +440,7 @@ export async function mount(props) {
 
 export async function unmount() {
   instance.unmount();
-  instance._container.innerHTML = '';
+  instance._container.innerHTML = "";
   instance = null;
   router = null;
   history.destroy();
@@ -424,16 +450,16 @@ export async function unmount() {
 3. 打包配置修改（`vue.config.js`）：
 
 ```javascript
- const path = require('path')
-const { name } = require('./package')
+const path = require("path");
+const { name } = require("./package");
 
-function resolve (dir) {
-  return path.join(__dirname, dir)
+function resolve(dir) {
+  return path.join(__dirname, dir);
 }
 
 module.exports = {
   filenameHashing: true,
-  lintOnSave: process.env.NODE_ENV !== 'production',
+  lintOnSave: process.env.NODE_ENV !== "production",
   runtimeCompiler: true,
   productionSourceMap: false,
   devServer: {
@@ -443,27 +469,27 @@ module.exports = {
     port: 8002,
     overlay: {
       warnings: false,
-      errors: true
+      errors: true,
     },
     headers: {
-      'Access-Control-Allow-Origin': '*'
-    }
+      "Access-Control-Allow-Origin": "*",
+    },
   },
   // 自定义webpack配置
   configureWebpack: {
     resolve: {
       alias: {
-        '@': resolve('src')
-      }
+        "@": resolve("src"),
+      },
     },
     // 让主应用能正确识别微应用暴露出来的一些信息
     output: {
       library: `${name}-[name]`,
-      libraryTarget: 'umd', // 把子应用打包成 umd 库格式
-      jsonpFunction: `webpackJsonp_${name}`
-    }
-  }
-}
+      libraryTarget: "umd", // 把子应用打包成 umd 库格式
+      jsonpFunction: `webpackJsonp_${name}`,
+    },
+  },
+};
 ```
 
 4. 主应用查看加载效果
@@ -502,19 +528,22 @@ $ yarn add react-router react-router-dom
 > 入口文件 index.js 修改，为了避免根 id #root 与其他的 DOM 冲突，需要限制查找范围。
 
 ```javascript
-import './public-path';
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
-import { BrowserRouter, Route, Link } from "react-router-dom"
+import "./public-path";
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./App";
+import { BrowserRouter, Route, Link } from "react-router-dom";
 
 function render(props) {
   const { container } = props;
   ReactDOM.render(
-    <BrowserRouter basename={window.__POWERED_BY_QIANKUN__ ? '/react' : '/'}>
-      <App/>
-    </BrowserRouter>
-    , container ? container.querySelector('#root') : document.querySelector('#root'));
+    <BrowserRouter basename={window.__POWERED_BY_QIANKUN__ ? "/react" : "/"}>
+      <App />
+    </BrowserRouter>,
+    container
+      ? container.querySelector("#root")
+      : document.querySelector("#root")
+  );
 }
 
 if (!window.__POWERED_BY_QIANKUN__) {
@@ -522,17 +551,21 @@ if (!window.__POWERED_BY_QIANKUN__) {
 }
 
 export async function bootstrap() {
-  console.log('[react16] react app bootstraped');
+  console.log("[react16] react app bootstraped");
 }
 
 export async function mount(props) {
-  console.log('[react16] props from main framework', props);
+  console.log("[react16] props from main framework", props);
   render(props);
 }
 
 export async function unmount(props) {
   const { container } = props;
-  ReactDOM.unmountComponentAtNode(container ? container.querySelector('#root') : document.querySelector('#root'));
+  ReactDOM.unmountComponentAtNode(
+    container
+      ? container.querySelector("#root")
+      : document.querySelector("#root")
+  );
 }
 ```
 
@@ -547,14 +580,14 @@ $ yarn add @rescripts/cli
 > 根目录增加配置文件 `.rescriptsrc.js`,注意一定是根目录下哦
 
 ```javascript
-const { name } = require('./package');
+const { name } = require("./package");
 
 module.exports = {
   webpack: (config) => {
     config.output.library = `${name}-[name]`;
-    config.output.libraryTarget = 'umd';
+    config.output.libraryTarget = "umd";
     config.output.jsonpFunction = `webpackJsonp_${name}`;
-    config.output.globalObject = 'window';
+    config.output.globalObject = "window";
 
     return config;
   },
@@ -563,7 +596,7 @@ module.exports = {
     const config = _;
 
     config.headers = {
-      'Access-Control-Allow-Origin': '*',
+      "Access-Control-Allow-Origin": "*",
     };
     config.historyApiFallback = true;
     config.hot = false;
@@ -642,24 +675,19 @@ $ yarn add @umijs/plugin-qiankun
    > 如果是配置文件抽离到`config`中，直接修改 `config.js`
 
 ```js
-import { defineConfig } from 'umi';
+import { defineConfig } from "umi";
 
 export default defineConfig({
   nodeModulesTransform: {
-    type: 'none',
+    type: "none",
   },
-  routes: [
-    { path: '/', component: '@/pages/index' },
-  ],
+  routes: [{ path: "/", component: "@/pages/index" }],
   fastRefresh: {},
   //开启qiankun配置
-  qiankun:{
-    slave:{
-
-    }
-  }
+  qiankun: {
+    slave: {},
+  },
 });
-
 ```
 
 > 这里只是做了简单的集成配置，更过功能请参看[@umijs/plugin-qiankun](https://umijs.org/zh-CN/plugins/plugin-qiankun)
@@ -670,7 +698,7 @@ export default defineConfig({
 
 ### 微应用非 webpack 应用
 
-> 非 webpack 应用有个需要注意点的点：接入之前请确保你的项目里的图片、音视频等资源能正常加载，如果这些资源的地址都是完整路径（例如 https://qiankun.umijs.org/logo.png），则没问题。如果都是相对路径，需要先将这些资源上传到服务器，使用完整路径。
+> 非 webpack 应用有个需要注意点的点：接入之前请确保你的项目里的图片、音视频等资源能正常加载，如果这些资源的地址都是完整路径（例如 <https://qiankun.umijs.org/logo.png>），则没问题。如果都是相对路径，需要先将这些资源上传到服务器，使用完整路径。
 
 1. 入口文件声明 `entry`入口
 
@@ -691,7 +719,6 @@ export default defineConfig({
 
 <!-- entry 入口 -->
 <script src="./index.js" entry></script>
-
 ```
 
 2. index.js
@@ -699,29 +726,29 @@ export default defineConfig({
 ```js
 const render = ($) => {
   // 这里可以在渲染之前做些什么。。。
-    return Promise.resolve();
-  };
+  return Promise.resolve();
+};
 
-  ((global) => {
-   //purehtml 是对应的微应用名称
-    global['purehtml'] = {
-      bootstrap: () => {
-        console.log('purehtml bootstrap');
-        return Promise.resolve();
-      },
-      mount: (props) => {
-        console.log('purehtml mount00000000000',props);
-        props.onGlobalStateChange((state,prev)=>{
-          console.log(state,prev)
-        })
-        return render($);
-      },
-      unmount: () => {
-        console.log('purehtml unmount');
-        return Promise.resolve();
-      },
-    };
-  })(window);
+((global) => {
+  //purehtml 是对应的微应用名称
+  global["purehtml"] = {
+    bootstrap: () => {
+      console.log("purehtml bootstrap");
+      return Promise.resolve();
+    },
+    mount: (props) => {
+      console.log("purehtml mount00000000000", props);
+      props.onGlobalStateChange((state, prev) => {
+        console.log(state, prev);
+      });
+      return render($);
+    },
+    unmount: () => {
+      console.log("purehtml unmount");
+      return Promise.resolve();
+    },
+  };
+})(window);
 ```
 
 3. 为了方便启动和加载，使用 `http-server` 启动本地服务
@@ -729,21 +756,21 @@ const render = ($) => {
 
 ```json
 {
-    "name": "purehtml",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.html",
-    "scripts": {
-      "start": "cross-env PORT=8005 http-server . --cors",
-      "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "",
-    "license": "MIT",
-    "devDependencies": {
-      "cross-env": "^7.0.2",
-      "http-server": "^0.12.1"
-    }
+  "name": "purehtml",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "start": "cross-env PORT=8005 http-server . --cors",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "cross-env": "^7.0.2",
+    "http-server": "^0.12.1"
   }
+}
 ```
 
 4. 加载效果
@@ -778,10 +805,9 @@ if (window.__POWERED_BY_QIANKUN__) {
 2. 设置 history 模式路由的 base，`src/app/app-routing.module.ts` 文件：
 
 ```js
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { APP_BASE_HREF } from '@angular/common';
-
+import { NgModule } from "@angular/core";
+import { Routes, RouterModule } from "@angular/router";
+import { APP_BASE_HREF } from "@angular/common";
 
 const routes: Routes = [];
 
@@ -789,10 +815,14 @@ const routes: Routes = [];
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
   // @ts-ignore
-  providers: [{ provide: APP_BASE_HREF, useValue: window.__POWERED_BY_QIANKUN__ ? '/angular' : '/' }]
+  providers: [
+    {
+      provide: APP_BASE_HREF,
+      useValue: window.__POWERED_BY_QIANKUN__ ? "/angular" : "/",
+    },
+  ],
 })
-export class AppRoutingModule { }
-
+export class AppRoutingModule {}
 ```
 
 3. 修改入口文件，src/main.ts 文件
@@ -837,22 +867,22 @@ export async function unmount(props: Object) {
    > 根据官方指示：先安装 `@angular-builders/custom-webpack` ，注意：angular 9 项目只能安装 9.x 版本，angular 10 项目可以安装最新版。
 
 ```bash
-$ yarn add @angular-builders/custom-webpack@9.2.0
+yarn add @angular-builders/custom-webpack@9.2.0
 ```
 
 > 在根目录增加 `custom-webpack.config.js`
 
 ```js
-const appName = require('./package.json').name;
+const appName = require("./package.json").name;
 module.exports = {
   devServer: {
     headers: {
-      'Access-Control-Allow-Origin': '*',
+      "Access-Control-Allow-Origin": "*",
     },
   },
   output: {
     library: `${appName}-[name]`,
-    libraryTarget: 'umd',
+    libraryTarget: "umd",
     jsonpFunction: `webpackJsonp_${appName}`,
   },
 };
@@ -886,13 +916,8 @@ module.exports = {
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
             "scripts": [],
             "customWebpackConfig": {
               "path": "./custom-webpack.config.js"
@@ -953,13 +978,8 @@ module.exports = {
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
-            "styles": [
-              "src/styles.scss"
-            ],
+            "assets": ["src/favicon.ico", "src/assets"],
+            "styles": ["src/styles.scss"],
             "scripts": []
           }
         },
@@ -971,9 +991,7 @@ module.exports = {
               "tsconfig.spec.json",
               "e2e/tsconfig.json"
             ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "exclude": ["**/node_modules/**"]
           }
         },
         "e2e": {
@@ -1045,7 +1063,6 @@ module.exports = {
     "strictInjectionParameters": true
   }
 }
-
 ```
 
 4. 查看加载效果
@@ -1082,7 +1099,7 @@ module.exports = {
 
 ```js
 export async function mount(props) {
-  console.log('获取主应用传值',props)
+  console.log("获取主应用传值", props);
   render(props);
 }
 ```
@@ -1096,10 +1113,9 @@ export async function mount(props) {
 1. 主应用中声明全局状态
 
 ```js
-
 // 全局状态
 const state = {
-  id: 'main_主应用',
+  id: "main_主应用",
 };
 // 初始化 state
 const actions: MicroAppStateActions = initGlobalState(state);
@@ -1114,7 +1130,7 @@ actions.onGlobalStateChange((state, prev) => {
 
 ```js
 export async function mount(props) {
-  console.log('initGlobalState传值',props)
+  console.log("initGlobalState传值", props);
   render(props);
 }
 ```
@@ -1131,18 +1147,20 @@ export async function mount(props) {
 function storeTest(props) {
   props.onGlobalStateChange &&
     props.onGlobalStateChange(
-      (value, prev) => console.log(`[onGlobalStateChange - ${props.name}]:`, value, prev),
-      true,
+      (value, prev) =>
+        console.log(`[onGlobalStateChange - ${props.name}]:`, value, prev),
+      true
     );
   // 为了演示效果明显增加定时器
-    setTimeout(() =>{
-      props.setGlobalState &&
+  setTimeout(() => {
+    props.setGlobalState &&
       props.setGlobalState({
-        id: `${props.name}_子应用`
+        id: `${props.name}_子应用`,
       });
-    },3000)
+  }, 3000);
 }
 ```
+
 ```js
 export async function mount(props) {
   storeTest(props);
@@ -1150,45 +1168,57 @@ export async function mount(props) {
 }
 ```
 
-
 ![](https://files.mdnice.com/user/16854/1d676684-f0ca-4b34-917e-266dc0cd3965.png)
 
 `输出两次 ？？？`
+
 > 输出两次的原因是在 `微应用` 中调用 `setGlobalState` , 主应用中的 `onGlobalStateChange` 也会执行
 
 3. 总结下
+
 - `initGlobalState` 初始化 `state`
 - `onGlobalStateChange` 监听状态变更
 - `setGlobalState` 修改状态
 - `offGlobalStateChange` 移除监听
 
 4. 问题
-> 如果想在微应用某个页面内修改全局状态应该怎么做 ？ 当然是可以把 `props` 中的方法挂载到当前应用的全局上啦。例如：
+   > 如果想在微应用某个页面内修改全局状态应该怎么做 ？ 当然是可以把 `props` 中的方法挂载到当前应用的全局上啦。例如：
+
 ```js
 export async function mount(props) {
   storeTest(props);
   render(props);
   // 挂载到全局 instance 上
-  instance.config.globalProperties.$onGlobalStateChange = props.onGlobalStateChange;
+  instance.config.globalProperties.$onGlobalStateChange =
+    props.onGlobalStateChange;
   instance.config.globalProperties.$setGlobalState = props.setGlobalState;
 }
 ```
 
 ### 定义全局的状态池
+
 > 定义全局状态池，说白了就是在主应用中定义全局状态，可以使用 `redux` `vuex` 等来定义。定义好全局状态，可以定义一个全局的类，类中声明两个方法，一个用来获取全局状态，一个用来修改全局状态。定义好之后，把这个类通过第一种 `props` 的传值方式传入，微应用通过 `mount`=>`props` 接收。这种方式就不做演示，个人建议使用第二种方式。
 
-## 总结
-> 到这里，基于`qiankun`的微前端搭建基本完成。本文只是对qiankun从0搭建到搭建过程中遇到问题并且解决问题以及后期项目中的一些基础配置和使用做简单概述。下一次将会对`多应用部署`问题做个详细概述。
+## Summary
 
-## 源码地址
+> 到这里，基于`qiankun`的微前端搭建基本完成。本文只是对 qiankun 从 0 搭建到搭建过程中遇到问题并且解决问题以及后期项目中的一些基础配置和使用做简单概述。下一次将会对`多应用部署`问题做个详细概述。
+
+In summary，If there is micro frontend applications scenario，I recommend that the team choose qiankun.
+
+- **Simple**
+
+  > Works with any javascript framework. Build your micro-frontend system just like using with iframe, but not iframe actually.
+
+- **Complete**
+
+  > Includes almost all the basic capabilities required to build a micro-frontend system, such as style isolation, js sandbox, preloading, and so on.
+
+- **Production-Ready**
+
+  > Had been extensively tested and polished by a large number of online applications both inside and outside of Ant Financial, the robustness is trustworthy.
+
+So in fact, It's really probably the most complete micro-frontends solution I've ever met.
+
+## Source Code
+
 [https://github.com/keeperdog/autodesk](https://github.com/keeperdog/autodesk)
-
-
-
-
-
-
-
-
-
-
