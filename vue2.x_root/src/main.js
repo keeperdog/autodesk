@@ -33,19 +33,23 @@ export async function bootstrap() {
 }
 
 function storeTest(props) {
-  props.setGlobalState &&
-    props.setGlobalState({
-      id: `${props.name}_子应用`,
-    });
+  // Add a timer for the demonstration effect
+  setTimeout(() => {
+    props.setGlobalState &&
+      props.setGlobalState({
+        id: `${props.name}_sub_application`,
+      });
+  }, 3000);
+
   props.onGlobalStateChange &&
     props.onGlobalStateChange(
-      (value, prev) =>
-        console.log(`[onGlobalStateChange - ${props.name}]:`, value, prev),
+      (value) => console.log(`[onGlobalStateChange - ${props.name}]:`, value),
       true
     );
 }
 
 export async function mount(props) {
+  console.log("value from main-app===", props);
   storeTest(props);
   render(props);
 }

@@ -15,6 +15,9 @@ export const Microconfig = [
     entry: 'http://localhost:8001',
     container: '#subContainer',
     activeRule: '/vue2',
+    props: {
+      id: 'props, Basic pass-by-value method',
+    },
     loader,
   },
   {
